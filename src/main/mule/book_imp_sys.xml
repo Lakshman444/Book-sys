@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="7b25ba7a-529d-4b94-9433-fcbb1c6fb989" >
+		<db:my-sql-connection host="localhost" port="3306" user="root" password="123456" database="training" />
+	</db:config>
+	<flow name="book_imp_sysFlow" doc:id="3fe21992-cbb5-42b3-b231-f929311b3588" >
+		<db:select doc:name="Select" doc:id="2e150ff0-58de-497d-a002-1c8d4038dbc5" config-ref="Database_Config">
+			<db:sql ><![CDATA[SELECT * FROM book where BookID = :BookID AND Publication = :Publication]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{'BookID' : attributes.queryParams.loo,
+'Publication'  : attributes.queryParams.koo}]]]></db:input-parameters>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="981ee12b-9e87-415c-a59b-8a34608e8c27" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>
